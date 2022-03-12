@@ -1,19 +1,30 @@
 import fs from 'fs'
 import csv from 'csv-parser'
+const titles = []
 const sourcePath = './csv-file'
 const resultPath = './resulting-md-files'
 const files = fs.readdirSync(sourcePath)
 
+
 // Create the resultPath in case it doesn't exist
-if (!fs.existsSync(resultPath)){
+if (!fs.existsSync(resultPath)) {
     fs.mkdirSync(resultPath);
 }
 
 // Use the object from csv-parser to create a hugo readable md
 function createMd(data) {
     // Parsing tags since they usually come in this format: "tag1, tag2, tag3"
-    if(data.tags)
-        data.tags = data.tags.match(/\b(\w+)\b/g)
+    if (data.tags) {
+        data.tags = data.tags.split(',')
+            .map(tag => tag.trim().replace(/  +/g, ' '))
+    }
+
+    // Warn that duplicate titles have been overwritten
+    if (titles.includes(data.title))
+        console.warn(`${data.title} is a duplicate title and has been overwritten!`)
+    titles.push(data.title)
+
+    // Write file
     fs.writeFileSync(`${resultPath}/${data.title}.md`, JSON.stringify(data, null, 2))
 }
 
