@@ -1,1 +1,4 @@
 node_modules
+
+resulting-md-files/*
+csv-file/*
