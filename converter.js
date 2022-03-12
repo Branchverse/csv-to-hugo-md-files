@@ -13,19 +13,26 @@ if (!fs.existsSync(resultPath)) {
 
 // Use the object from csv-parser to create a hugo readable md
 function createMd(data) {
-    // Parsing tags since they usually come in this format: "tag1, tag2, tag3"
-    if (data.tags) {
-        data.tags = data.tags.split(',')
-            .map(tag => tag.trim().replace(/  +/g, ' '))
-    }
 
     // Warn that duplicate titles have been overwritten
     if (titles.includes(data.title))
         console.warn(`${data.title} is a duplicate title and has been overwritten!`)
     titles.push(data.title)
 
+    // Parsing tags since they usually come in this format: "tag1, tag2, tag3"
+    if (data.tags) {
+        data.tags = data.tags.split(',')
+            .map(tag => tag.trim().replace(/  +/g, ' '))
+    }
+
+    // Merging 
+    if (data.object_weight && data.object_unit) {
+        data.object_weight = data.object_weight.concat(' ', data.object_unit)
+    }
+    const { object_unit, ...rest } = data
+
     // Write file
-    fs.writeFileSync(`${resultPath}/${data.title}.md`, JSON.stringify(data, null, 2))
+    fs.writeFileSync(`${resultPath}/${data.title}.md`, JSON.stringify(rest, null, 2))
 }
 
 // This is to ignore the .gitkeep and allow multiple .csv
