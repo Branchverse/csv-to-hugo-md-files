@@ -15,9 +15,9 @@ if (!fs.existsSync(resultPath)) {
 function createMd(data) {
 
     // Warn that duplicate titles have been overwritten
-    if (titles.includes(data.title))
-        console.warn(`${data.title} is a duplicate title and has been overwritten!`)
-    titles.push(data.title)
+    if (titles.includes(data.title_en))
+        console.warn(`${data.title_en} is a duplicate title and has been overwritten!`)
+    titles.push(data.title_en)
 
     // Parsing tags since they usually come in this format: "tag1, tag2, tag3"
     if (data.tags) {
@@ -29,10 +29,17 @@ function createMd(data) {
     if (data.object_weight && data.object_unit) {
         data.object_weight = data.object_weight.concat(' ', data.object_unit)
     }
-    const { object_unit, ...rest } = data
+    
+    const resultDto = {
+        title: data.title_en,
+        tags: data.tags,
+        object_weight: data.object_weight,
+        source: data.source,
+        image: data.image
+    }
 
     // Write file
-    fs.writeFileSync(`${resultPath}/${data.title}.md`, JSON.stringify(rest, null, 2))
+    fs.writeFileSync(`${resultPath}/${data.title_en}.md`, JSON.stringify(resultDto, null, 2))
 }
 
 // This is to ignore the .gitkeep and allow multiple .csv
