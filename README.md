@@ -1,5 +1,5 @@
 # csv-to-hugo-md-files
-
+> # This repo is deprecated! moved to orga
 ## Usage
 
 - clone the repository
