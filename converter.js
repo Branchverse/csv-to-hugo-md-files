@@ -25,25 +25,16 @@ function createMd(data) {
             .map(tag => tag.trim().replace(/  +/g, ' '))
     }
 
-    // Merging 
-    if (data.object_weight && data.object_unit) {
-        data.object_weight = data.object_weight.concat(' ', data.object_unit)
-    }
-    const { object_unit, ...rest } = data
-
     // Write file
     fs.writeFileSync(`${resultPath}/${data.title}.md`, JSON.stringify(rest, null, 2))
 }
 
 // This is to ignore the .gitkeep and allow multiple .csv
 files.forEach(file => {
-    if (file.indexOf('.csv') !== -1) {
+    if (file.split('.').at(-1) === 'csv') {
         fs.createReadStream(sourcePath + '/' + file)
             .pipe(csv())
             .on('data', data => createMd(data))
             .on('end', () => { console.log('DONE') })
     }
 })
-
-
-
